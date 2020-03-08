@@ -1,12 +1,27 @@
-clear;
+%-------------------------------------------------------------------------%
+% Program:                                                                %
+% Date:                                                                   %
+% Author:                                                                 %
+%-------------------------------------------------------------------------%
+
+
+% Clear
+clear all;
+close all;
 clc;
-input('Introduza o script com os dados da estrutura a resolver? ') %inputs 
-Analise_Dinamica = input('Efetuar análise dinamica? (S/N) ','s');
-if Analise_Dinamica == 'S'
-N_modos_de_vib = input('Numero de Modos de Vibração a calcular?');
+
+% Decision Input Data
+input('Input the name of the script to be solved ');
+
+DynamicAnalysis = input('Do you wish to perform dynamic Analysis? (Y/N) ','s');
+
+if (DynamicAnalysis == 'S')
+    VibrationModes = input('Input the desired number of vibration modes');
 end
-[ L, gamma,E_tipo] = transformacao_de_dados(Nos,Elementos,E_tipo,Analise_Dinamica); %funções de tranformação de dados e calculo dos tamanhos e posições dos nós nas matrizes da estrutura
-[ K,MpA,F,M,Movimentos_fixos,F_aplicada,GdL] = Posicao_Kg( Elementos,E_tipo,Movimentos_fixos0,F_aplicada0);
+
+% Call function
+[L, gamma, E_tipo] = transformacao_de_dados(Nos,Elementos,E_tipo,DynamicAnalysis); %funções de tranformação de dados e calculo dos tamanhos e posições dos nós nas matrizes da estrutura
+[K,MpA,F,M,Movimentos_fixos,F_aplicada,GdL] = Posicao_Kg( Elementos,E_tipo,Movimentos_fixos0,F_aplicada0);
 
 for i=1:length(Elementos)
     switch E_tipo(i) %caso o elemento for uma barra cria a matrizes globais
@@ -15,9 +30,9 @@ for i=1:length(Elementos)
             Fg=0; %não utilizado, mas o matlab precisa que a variavel esteja definida para usar como input na assemblagem (só é efetivamente usado se for uma viga com cargas distribuidas)
             Mg=0; %mesma situacao
         case 'v'
-            [ Mg,Kg,Fg] = E_Viga(i,L,gamma,E,A,I,Q,Analise_Dinamica,ro); %se for uma viga cria as matrizes K global 
+            [ Mg,Kg,Fg] = E_Viga(i,L,gamma,E,A,I,Q,DynamicAnalysis,ro); %se for uma viga cria as matrizes K global 
     end
-    [ K, F, M] = Assemblagem(i,Kg,Fg,Elementos,K,MpA,E_tipo,F,Q,Mg,M,Analise_Dinamica); % faz a assemblagem dos dados das matrizes globais nas matrizes da estrutura 
+    [ K, F, M] = Assemblagem(i,Kg,Fg,Elementos,K,MpA,E_tipo,F,Q,Mg,M,DynamicAnalysis); % faz a assemblagem dos dados das matrizes globais nas matrizes da estrutura 
 end
 
 F = F+F_aplicada; %finaliza o vetor forças
@@ -56,7 +71,7 @@ for i=1:max(max(Elementos)) %Display reações nos Apoios
 end
 
 
-if Analise_Dinamica == 'N'  %esforços internos de Elementos pedidos
+if DynamicAnalysis == 'N'  %esforços internos de Elementos pedidos
     fprintf('\n Esforços internos dos Elementos %d\n\n','');
 while true
 ii = input('Numero de Elemento?  [0 Para terminar]');
@@ -84,7 +99,7 @@ end
 end %loop de display dos esforços internos
 end
 %Analise Dinamica 
-if Analise_Dinamica == 'S'
+if DynamicAnalysis == 'S'
     fprintf('\n Frequencias Naturais \n%d','');
     [uw,Wn] = Analise_Modal(K,M,Mov_livres,N_modos_de_vib);
     for i=1:length(Wn) %print das frequencias naturais

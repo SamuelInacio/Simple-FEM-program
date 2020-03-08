@@ -1,4 +1,4 @@
-function [ uw,Wn] = Analise_Modal(K,M,Mov_livres,N_modos_de_vib)
+function [uw,Wn] = Analise_Modal(K,M,Mov_livres,N_modos_de_vib)
 %Analise_Modal Resolve o problema de valores e vetores proprios que calcula
 %as frequencias naturais e os modos de vibração
 [uw,w] = eigs(K(Mov_livres,Mov_livres),M(Mov_livres,Mov_livres),N_modos_de_vib,'sa');
