@@ -19,31 +19,41 @@ if (dynamicAnalysis == 'Y')
 end
 
 % Perform data transformation
-[length, gamma, elementType] = DataProcessing(nodes, elements, elementType, dynamicAnalysis); 
+[elementLength, gamma, elementType] = DataProcessing(nodes, elements, elementType, dynamicAnalysis); 
 
 % Compute sizes and positions of nodes in the structure matrices
-[K, MpA, F, M, fixedMovements, appliedForce,df] = Posicao_Kg(elements, elementType, fixedMovements, newAppliedForce);
+[K, MpA, F, M, fixedMovements, appliedForce, df] = Posicao_Kg(elements, elementType, fixedMovements0, appliedForce0);
 
 for i = 1:length(elements)
-    switch elementType(i) %caso o elemento for uma barra cria a matrizes globais
-        case 'b'
-            [Kg] = E_Barra(i, length, gamma, A, E);
-            Fg=0; %não utilizado, mas o matlab precisa que a variavel esteja definida para usar como input na assemblagem (só é efetivamente usado se for uma viga com cargas distribuidas)
-            Mg=0; %mesma situacao
-        case 'v'
-            [ Mg,Kg,Fg] = E_Viga(i,length,gamma,E,A,I,Q,dynamicAnalysis,ro); %se for uma viga cria as matrizes K global 
-    end
-    [ K, F, M] = Assemblagem(i,Kg,Fg,Elementos,K,MpA,E_tipo,F,Q,Mg,M,dynamicAnalysis); % faz a assemblagem dos dados das matrizes globais nas matrizes da estrutura 
+    switch elementType(i) 
+        
+        % Element is a Link - creates the global matrices
+        case 'l'
+            [Kg] = ElementLink(i, elementLength, gamma, A, E);
+            
+            % Not used, but needs only be specified in the assembly if the element is a beam with distributed loads
+            Fg = 0; 
+            Mg = 0; 
+            
+        % Element is a Beams   
+        case 'b'            
+            [Mg, Kg, Fg] = ElementBeam(i, elementLength, gamma, E, A, I, Q, dynamicAnalysis, rho); 
+            
+    end %% switch
+    
+    % Assembly of the global matrices of the struture 
+    [K, F, M] = Assembler(i, Kg, Fg, elements, K, MpA, elementType, F, Q, Mg, M, dynamicAnalysis); 
 end
 
 % Update the vector of forces
-F = F + AppliedForce; 
-AllMovements = 1:length(K);
-FreeMovements = setdiff(AllMovements, FixedMovements);
+F = F + appliedForce; 
+
+allMovements = 1:length(K);
+freeMovements = setdiff(allMovements, fixedMovements);
 U = zeros(length(K),1);
 
 % Compute Free Movements
-U(FreeMovements) = K(FreeMovements, FreeMovements)\F(FreeMovements); 
+U(freeMovements) = K(freeMovements, freeMovements)\F(freeMovements); 
 
 % Post-processing
 for i = 1:length(MpA) 
@@ -53,7 +63,7 @@ for i = 1:length(MpA)
     fprintf('\t xx = %f',U(MpA(i)));
     fprintf('\t yy = %f',U(MpA(i)+1));
     
-    if GdL(i) == 3
+    if df(i) == 3
        fprintf('\t theta = %f',U(MpA(i)+2));
     end
 end
@@ -64,16 +74,16 @@ R = K * U - F;
 % Display Reaction at the supports
 fprintf('\n\n Reaction at the supports %d','');
 
-for i = 1:max(max(Elementos))     
-    if Movimentos_fixos0(i,1) ~= 0
+for i = 1:max(max(elements))     
+    if fixedMovements0(i,1) ~= 0
         fprintf('\n Reaction at Node %d', i);
         fprintf('xx = %f\n', R(MpA(i)));
     end
-    if Movimentos_fixos0(i,2) ~= 0
+    if fixedMovements0(i,2) ~= 0
         fprintf('Reaction at Node %d', i);
         fprintf('yy = %f\n', R(MpA(i)+1));
     end
-    if Movimentos_fixos0(i,3) ~= 0
+    if fixedMovements0(i,3) ~= 0
         fprintf('Reaction at Node %d', i);
         fprintf('Mz = %f\n', R(MpA(i)+2));
     end    
@@ -92,16 +102,16 @@ if dynamicAnalysis == 'N'
             else
                 switch elementType(ii)
 
-                    % The element is a bar
-                    case 'b'   
-                        [F_axial, tensao_axial] = esforcos_internos_barra(ii, Elementos, gamma, U, length, E, A, MpA);
+                    % The element is a link
+                    case 'l'   
+                        [F_axial, tensao_axial] = esforcos_internos_barra(ii, elements, gamma, U, elementLength, E, A, MpA);
                         fprintf('Element %d\n', ii);
                         fprintf('F_axial = %f\n', F_axial);
                         fprintf('tensao_axial = %f\n\n', tensao_axial);
 
                     % The element is a beam
                     case 'v' 
-                        [F_axial, Esforco_Transverso_1, Esforco_Transverso_2, Momento_1, Momento_2, F_internos] = esforcos_internos_viga(ii, Elementos, gamma, U,length, E, A, I, MpA, Q);
+                        [F_axial, Esforco_Transverso_1, Esforco_Transverso_2, Momento_1, Momento_2, F_internos] = esforcos_internos_viga(ii, elements, gamma, U,elementLength, E, A, I, MpA, Q);
                         fprintf('Elemento %d\n', ii);
                         fprintf('F axial = %f\n', F_axial);
                         fprintf('Esforco Transverso no nó 1 = %f\n',Esforco_Transverso_1);
@@ -113,21 +123,24 @@ if dynamicAnalysis == 'N'
     end %% while
 end %% iff
 
-%Dynamic Analysis
+
+% Dynamic Analysis
 if dynamicAnalysis == 'Y'
     
     % Display natural frequencies
     fprintf('\n Natural frequencies \n%d',''); % same as undamped frequencies ?
     
-    [uw, Wn] = Analise_Modal(K, M, FreeMovements, vibrationModes);
-    for i=1:length(Wn) 
-          fprintf('Frequencia Natural %d',i);
-    fprintf(' = %f\n',Wn(i));
+    [uw, Wn] = ModalAnalysis(K, M, freeMovements, vibrationModes);
+    
+    for i = 1:length(Wn) 
+          fprintf('Natural Frequency %d',i);
+          fprintf(' = %f\n',Wn(i));
     end
-    disp('modos de vibracao'); 
+    
+    disp('Vibration Modes'); 
     disp(uw);
    
-end
+end %% if
 
 
 
