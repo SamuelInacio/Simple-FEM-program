@@ -22,9 +22,10 @@ end
 [elementLength, gamma, elementType] = DataProcessing(nodes, elements, elementType, dynamicAnalysis); 
 
 % Compute sizes and positions of nodes in the structure matrices
-[K, MpA, F, M, fixedMovements, appliedForce, df] = Posicao_Kg(elements, elementType, fixedMovements0, appliedForce0);
+[K, MpA, F, M, fixedMovements, appliedForce, df] = Posicao_KgNew(elements, elementType, fixedMovements0, appliedForce0);
+%[ K,MpA,F,M,fixedMovements,appliedForce,df] = Posicao_Kg( elements,elementType,fixedMovements0,appliedForce0);
 
-for i = 1:length(elements)
+for i = 1:size(elements,1)
     switch elementType(i) 
         
         % Element is a Link - creates the global matrices
@@ -42,7 +43,8 @@ for i = 1:length(elements)
     end %% switch
     
     % Assembly of the global matrices of the struture 
-    [K, F, M] = Assembler(i, Kg, Fg, elements, K, MpA, elementType, F, Q, Mg, M, dynamicAnalysis); 
+    [K, F, M] = Assembler(i, Kg, Fg, elements, K, MpA, elementType, F, Q, Mg, M, dynamicAnalysis);
+    %[ K, F, M] = Assemblagem(i,Kg,Fg,elements,K,MpA,elementType,F,Q,Mg,M,dynamicAnalysis);
 end
 
 % Update the vector of forces
@@ -110,7 +112,7 @@ if dynamicAnalysis == 'N'
                         fprintf('tensao_axial = %f\n\n', tensao_axial);
 
                     % The element is a beam
-                    case 'v' 
+                    case 'b' 
                         [F_axial, Esforco_Transverso_1, Esforco_Transverso_2, Momento_1, Momento_2, F_internos] = esforcos_internos_viga(ii, elements, gamma, U,elementLength, E, A, I, MpA, Q);
                         fprintf('Elemento %d\n', ii);
                         fprintf('F axial = %f\n', F_axial);

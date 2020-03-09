@@ -11,13 +11,13 @@ function [K, MpA, F, M, fixedMovements, appliedForce, df] = Posicao_Kg(elements,
     %se mais nda for mudado, isto assume que todos os nós estão ligados a barras, logo têm 2GdL
     df = 2*ones(max(max(elements)),1); 
     
-    [linhas , ~]=size(elements);
+    [linhas , ~] = size(elements);
     
     %muda o Gdl dos Nós para 3 que estão ligados a pelo menos uma viga
     for i = 1:linhas 
         node1 = elements(i,1);
         node2 = elements(i,2);
-        if elementType(i) == 'v'
+        if elementType(i) == 'b'
             df(node1) = 3;
             df(node2) = 3;
         end
