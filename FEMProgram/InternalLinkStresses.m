@@ -3,7 +3,7 @@
 % tranformando a matriz de deslocamentos para coordenadas locais, é
 % possivel calcular as forças e tensões internas de cada elemento
 
-function [axialForce,tensao_axial ] = esforcos_internos_barra(i, elements, gamma, U, elementLength, E, A, MpA)
+function [axialForce,tensao_axial ] = InternalLinkStresses(i, elements, gamma, U, elementLength, E, A, MpA)
 
     % Node 1 -  one of the elements to compute
     node1 = elements(i,1); 

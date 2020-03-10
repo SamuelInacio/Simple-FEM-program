@@ -3,7 +3,7 @@
 % tranformando a matriz de deslocamentos para coordenadas locais, é
 % possivel calcular as forças e tensões internas de cada elemento
 
-function [axialForce, Esforco_Transverso_1, Esforco_Transverso_2, Momento_1, Momento_2, F_internos] = esforcos_internos_viga(i,elements,gamma,U,elementLength,E,A,I,MpA,Q)
+function [axialForce, Esforco_Transverso_1, Esforco_Transverso_2, Momento_1, Momento_2, F_internos] = InternalBeamStresses(i,elements,gamma,U,elementLength,E,A,I,MpA,Q)
 
     % Node 1 -  one of the elements to compute
     node1 = elements(i,1); 

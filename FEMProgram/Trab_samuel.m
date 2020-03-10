@@ -1,5 +1,7 @@
 % Trabalho samuel
 
+% Script A - describe the problem.
+
 % Node coordinates, node 1 at first line, node 2 at second line...
 nodes = [0 0; 6 0; 12 0; 6 6; 6 12];  
 
@@ -28,7 +30,7 @@ appliedForce0 = [0 -25000 0; 0 -50000 0;0 -75000 -15000; 0 0 0; 0 0 0];
 x = sym('x');            
 
 % Applied loads in the beam by order of element
-Q = [0;0;0;30000;0;0;0];   
+Q = [0; 0; 0; 30000; 0; 0; 0];   
 
 clear x;
 

@@ -1,23 +1,26 @@
-%POSICAO_KG algoritmo que define as dimensões da matriz K,F,M e cria uma matriz que identifica os graus de liberdade de cada Nó e a posição das matrizes Rigidez globais na assemblagem
+% PositionKg: Definies the dimensions of the matrices K,F,M and creates a
+% matrix to identify the degrees of freedom of each node and the position
+% of the stiffness global matrices in the assembly
+
 %Modifica o formato do vetor das forças aplicadas e da matriz dos Apoios para o formato com que o programa foi construido (intruduzir os dados no formato pedido permite a automatização da refinação da malha)  
 
+function [K, MpA, F, M, fixedMovements, appliedForce, df] = PositionKg(elements, elementType, fixedMovements0, appliedForce0)
 
-function [K, MpA, F, M, fixedMovements, appliedForce, df] = Posicao_Kg(elements, elementType, fixedMovements0, appliedForce0)
-
-
-    %algoritmo que cria uma matriz que identifica os graus de liberdade de cada nó
+    % Algorythm:  creates a matrix that identifies the degrees of freedom in each node
     sizeK = 0;
     
-    %se mais nda for mudado, isto assume que todos os nós estão ligados a barras, logo têm 2GdL
+    % If nothing else changes, all nodes are connected to links, hence twice the df
     df = 2*ones(max(max(elements)),1); 
     
     [linhas , ~] = size(elements);
     
-    %muda o Gdl dos Nós para 3 que estão ligados a pelo menos uma viga
+    % muda o Gdl dos Nós para 3 que estão ligados a pelo menos uma viga
     for i = 1:linhas 
         node1 = elements(i,1);
         node2 = elements(i,2);
-        if elementType(i) == 'v'
+        
+        % Element is a beam
+        if elementType(i) == 'b'
             df(node1) = 3;
             df(node2) = 3;
         end
