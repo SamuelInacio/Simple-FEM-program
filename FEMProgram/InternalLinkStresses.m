@@ -1,9 +1,9 @@
 
-% esforcos_internos:  calcula os esforços internos de um elemento b
-% tranformando a matriz de deslocamentos para coordenadas locais, é
-% possivel calcular as forças e tensões internas de cada elemento
+%  InternalLinkStresses: computes the internal forces of a link element. By
+% tranforming the displacement matrix to local coordinates, computes the
+% internal forces and stresses of each element
 
-function [axialForce,tensao_axial ] = InternalLinkStresses(i, elements, gamma, U, elementLength, E, A, MpA)
+function [axialForce, axialStress] = InternalLinkStresses(i, elements, alpha, U, elementLength, E, A, MpA)
 
     % Node 1 -  one of the elements to compute
     node1 = elements(i,1); 
@@ -24,8 +24,8 @@ function [axialForce,tensao_axial ] = InternalLinkStresses(i, elements, gamma, U
     Ug(4,1) = U(MpA(node2)+1);
     
     % Transformation matrix
-    T = [cosd(gamma(i))     sind(gamma(i))            0                   0; 
-              0                  0              cosd(gamma(i))      sind(gamma(i))];    
+    T = [cosd(alpha(i))     sind(alpha(i))            0                   0; 
+              0                  0              cosd(alpha(i))      sind(alpha(i))];    
    
     % Transformation to local coordinates    
     Ue = T*Ug; 
@@ -37,4 +37,4 @@ function [axialForce,tensao_axial ] = InternalLinkStresses(i, elements, gamma, U
     axialForce = appliedForces1(2); 
     
     %Axial tension in the load  - tensão axial na barra
-    tensao_axial = axialForce/A(i); 
+    axialStress = axialForce/A(i); 

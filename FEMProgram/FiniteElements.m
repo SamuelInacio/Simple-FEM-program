@@ -9,7 +9,7 @@ clear all;
 clc;
 
 % Decision Condicioned on Input Data
-input('Name of the script to be solved: ');
+input('Script to be solved: ');
 dynamicAnalysis = input('Perform dynamic analysis? (Y/N): ','s');
 
 % If a dynamic analysis is desired, input the number of vibration modes
@@ -18,7 +18,7 @@ if (dynamicAnalysis == 'Y')
 end
 
 % Perform Data Transformation
-[elementLength, gamma, elementType] = DataProcessing(nodes, elements, elementType, dynamicAnalysis); 
+[elementLength, alpha, elementType] = DataProcessing(nodes, elements, elementType, dynamicAnalysis); 
 
 % Compute sizes and positions of nodes in the structure matrices
 [K, MpA, F, M, fixedMovements, appliedForce, df] = PositionKg(elements, elementType, fixedMovements0, appliedForce0);
@@ -28,7 +28,7 @@ for i = 1:length(elements)
         
         % Element is a Link - creates the global matrices
         case 'l'
-            [Kg] = ElementLink(i, elementLength, gamma, A, E);
+            [Kg] = ElementLink(i, elementLength, alpha, A, E);
             
             % Not used, however needs to be specified in the assembly if the element is a beam with distributed loads
             Fg = 0; 
@@ -36,7 +36,7 @@ for i = 1:length(elements)
             
         % Element is a Beam   
         case 'b'            
-            [Mg, Kg, Fg] = ElementBeam(i, elementLength, gamma, E, A, I, Q, dynamicAnalysis, rho); 
+            [Mg, Kg, Fg] = ElementBeam(i, elementLength, alpha, E, A, I, Q, dynamicAnalysis, rho); 
             
     end %% switch
     
@@ -54,16 +54,21 @@ U = zeros(length(K),1);
 % Compute Free Movements
 U(freeMovements) = K(freeMovements, freeMovements)\F(freeMovements); 
 
+% Display reactions at the supports
+fprintf('\n\n Displacements at the nodes\n');
+
+
+
 % Post-processing
 for i = 1:length(MpA) 
     
     % Display dos Deslocamentos 
-    fprintf('\n Displacement at Node %d: ',i);
-    fprintf('\t xx = %f',U(MpA(i)));
-    fprintf('\t yy = %f',U(MpA(i)+1));
+    fprintf('\n Node %d: ',i);
+    fprintf('\t xx_%d = %f', i, U(MpA(i)));
+    fprintf('\t yy_%d = %f', i, U(MpA(i)+1));
     
     if df(i) == 3
-       fprintf('\t theta = %f',U(MpA(i)+2));
+       fprintf('\t theta_%d = %f', i, U(MpA(i)+2));
     end
 end
 
@@ -71,54 +76,54 @@ end
 R = K * U - F; 
    
 % Display reactions at the supports
-fprintf('\n\n Reaction at the supports %d','');
+fprintf('\n\n Reactions at the supports\n');
 
 for i = 1:max(max(elements))   
     
     if fixedMovements0(i,1) ~= 0
-        fprintf('\n Reaction at Node %d', i);
-        fprintf('xx = %f\n', R(MpA(i)));
+        fprintf('\n Node %d: ', i);
+        fprintf('\t xx_%d = %f\n', i, R(MpA(i)));
     end
     
     if fixedMovements0(i,2) ~= 0
-        fprintf('Reaction at Node %d', i);
-        fprintf('yy = %f\n', R(MpA(i)+1));
+        fprintf(' Node %d: ', i);
+        fprintf('\t yy_%d = %f\n', i, R(MpA(i)+1));
     end
     
     if fixedMovements0(i,3) ~= 0
-        fprintf('Reaction at Node %d', i);
-        fprintf('Mz = %f\n', R(MpA(i)+2));
+        fprintf(' Node %d: ', i);
+        fprintf('\t Mz_%d = %f\n', i, R(MpA(i)+2));
     end    
 end
 
 % If no dynamic analysis is desired compute the internal stresses of the desired elements
 if dynamicAnalysis == 'N' 
-    fprintf('\n Internal stresses of the elements %d\n\n','');
+    fprintf('\n Internal stresses of the elements \n\n');
     
     while true
-        ii = input('Number of elements [Input 0 to terminate]');
+        ii = input(' Element number [0 to terminate]: ');
         
         if ii == 0
             break
             else
                 switch elementType(ii)
 
-                    % The element is a link
+                    % Element is a Link
                     case 'l'   
-                        [axialForce, axialStress] =  InternalLinkStresses(ii, elements, gamma, U, elementLength, E, A, MpA);
-                        fprintf('Element %d\n', ii);
-                        fprintf('F_axial = %f\n', axialForce);
-                        fprintf('tensao_axial = %f\n\n', axialStress);
+                        [axialForce, axialStress] =  InternalLinkStresses(ii, elements, alpha, U, elementLength, E, A, MpA);
+                        fprintf('\n Element %d\n\n', ii);
+                        fprintf('\t Axial Force = %f\n\n', axialForce);
+                        fprintf('\t Axial Stress = %f\n\n', axialStress);
 
-                    % The element is a beam
+                    % Element is a Beam
                     case 'b' 
-                        [axialForce, Esforco_Transverso_1, Esforco_Transverso_2, Momento_1, Momento_2, F_internos] = InternalBeamStresses(ii, elements, gamma, U,elementLength, E, A, I, MpA, Q);
-                        fprintf('Elemento %d\n', ii);
-                        fprintf('F axial = %f\n', axialForce);
-                        fprintf('Esforco Transverso no nó 1 = %f\n',Esforco_Transverso_1);
-                        fprintf('Applied moment at node 1 = %f\n', Momento_1);
-                        fprintf('Esforco Transverso no nó 2 = %f\n', Esforco_Transverso_2);
-                        fprintf('Applied moment at node 2 = %f\n', Momento_2);
+                        [axialForce, shearForce1, shearForce2, moment1, moment2, F_internos] = InternalBeamStresses(ii, elements, alpha, U,elementLength, E, A, I, MpA, Q);
+                        fprintf(' Element %d\n\n', ii);
+                        fprintf('\t Axial Force = %f\n\n', axialForce);
+                        fprintf('\t Shear Force at node 1 = %f\n\n',shearForce1);
+                        fprintf('\t Applied moment at node 1 = %f\n\n', moment1);
+                        fprintf('\t Shear Force at node 2 = %f\n\n', shearForce2);
+                        fprintf('\t Applied moment at node 2 = %f\n\n', moment2);
                 end
         end %% if
     end %% while
@@ -129,16 +134,16 @@ end %% iff
 if dynamicAnalysis == 'Y'
     
     % Display natural frequencies
-    fprintf('\n Natural frequencies \n%d',''); % same as undamped frequencies ?
+    fprintf('\n\n Natural frequencies\n\n'); % same as undamped frequencies ?
     
     [uw, Wn] = ModalAnalysis(K, M, freeMovements, vibrationModes);
     
     for i = 1:length(Wn) 
-          fprintf('Natural Frequency %d',i);
+          fprintf(' Frequency %d',i);
           fprintf(' = %f\n',Wn(i));
     end
     
-    disp('Vibration Modes'); 
+    fprintf('\n\n Vibration Modes\n\n'); 
     disp(uw);
    
 end %% if

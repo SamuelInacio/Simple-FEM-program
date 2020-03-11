@@ -1,6 +1,6 @@
 
 % ElementBeam -Create stiffness matrixof the beam element in global coordinates
-function [Mg, Kg, Fg] = ElementBeam(i, elementLength, gamma, E, A, I, Q, dynamicAnalysis, rho)
+function [Mg, Kg, Fg] = ElementBeam(i, elementLength, alpha, E, A, I, Q, dynamicAnalysis, rho)
 
     % Beam stiffness matrix as seen from local coordinates
     Ke = [E(i)*A(i)/elementLength(i)              0                           0                -E(i)*A(i)/elementLength(i)             0                            0; 
@@ -11,11 +11,11 @@ function [Mg, Kg, Fg] = ElementBeam(i, elementLength, gamma, E, A, I, Q, dynamic
                  0               6*E(i)*I(i)/elementLength(i)^2     2*E(i)*I(i)/elementLength(i)              0              -6*E(i)*I(i)/elementLength(i)^2     4*E(i)*I(i)/elementLength(i)];
 
     % Transformation matriz
-    T = [cosd(gamma(i))     sind(gamma(i))       0              0                   0            0;
-        -sind(gamma(i))     cosd(gamma(i))       0              0                   0            0;
+    T = [cosd(alpha(i))     sind(alpha(i))       0              0                   0            0;
+        -sind(alpha(i))     cosd(alpha(i))       0              0                   0            0;
               0                   0              1              0                   0            0;
-              0                   0              0       cosd(gamma(i))      sind(gamma(i))      0;
-              0                   0              0      -sind(gamma(i))      cosd(gamma(i))      0;
+              0                   0              0       cosd(alpha(i))      sind(alpha(i))      0;
+              0                   0              0      -sind(alpha(i))      cosd(alpha(i))      0;
               0                   0              0              0                   0            1];
 
     % Beam stiffness matrix as seen from global coordinates
@@ -46,7 +46,7 @@ function [Mg, Kg, Fg] = ElementBeam(i, elementLength, gamma, E, A, I, Q, dynamic
         Me(5,5) = Me(2,2);
         Me(6,6) = Me(3,3);
 
-        % Mass matrix for local coordinates
+        % Matrix of mass for local coordinates
         Me = rho(i)*A(i)*elementLength(i)*Me;
 
         % Coordinate transformation (global coordinates)

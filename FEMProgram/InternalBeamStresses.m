@@ -1,9 +1,8 @@
 
-% esforcos_internos_viga calcula os esforços internos de um viga
-% tranformando a matriz de deslocamentos para coordenadas locais, é
-% possivel calcular as forças e tensões internas de cada elemento
-
-function [axialForce, Esforco_Transverso_1, Esforco_Transverso_2, Momento_1, Momento_2, F_internos] = InternalBeamStresses(i,elements,gamma,U,elementLength,E,A,I,MpA,Q)
+% InternalBeamStresses: computes the internal forces of a beam element. By
+% tranforming the displacement matrix to local coordinates, computes the
+% internal forces and stresses of each element
+function [axialForce, shearForce1, shearForce2, moment1, moment2, F_internos] = InternalBeamStresses(i, elements, alpha, U, elementLength, E, A, I, MpA, Q)
 
     % Node 1 -  one of the elements to compute
     node1 = elements(i,1); 
@@ -31,11 +30,11 @@ function [axialForce, Esforco_Transverso_1, Esforco_Transverso_2, Momento_1, Mom
     Ug(6,1) = U(MpA(node2)+2);
     
     % Transformation matriz
-    T = [cosd(gamma(i))     sind(gamma(i))       0              0                   0            0;
-        -sind(gamma(i))     cosd(gamma(i))       0              0                   0            0;
+    T = [cosd(alpha(i))     sind(alpha(i))       0              0                   0            0;
+        -sind(alpha(i))     cosd(alpha(i))       0              0                   0            0;
               0                   0              1              0                   0            0;
-              0                   0              0       cosd(gamma(i))      sind(gamma(i))      0;
-              0                   0              0      -sind(gamma(i))      cosd(gamma(i))      0;
+              0                   0              0       cosd(alpha(i))      sind(alpha(i))      0;
+              0                   0              0      -sind(alpha(i))      cosd(alpha(i))      0;
               0                   0              0              0                   0            1];
 
     % If distributed loads exist in the element, compute them to remove them from the equation
@@ -69,10 +68,10 @@ function [axialForce, Esforco_Transverso_1, Esforco_Transverso_2, Momento_1, Mom
     % força axial (tanto do n´1 um como do nó 2, de acordo com a convensão de sinais) )
     axialForce = F_internos(4);
     
-    Esforco_Transverso_1 = F_internos(2);
-    Esforco_Transverso_2 = F_internos(5);
-    Momento_1 = F_internos(3);
-    Momento_2 = F_internos(6);         
+    shearForce1 = F_internos(2);
+    shearForce2 = F_internos(5);
+    moment1 = F_internos(3);
+    moment2 = F_internos(6);         
 end
 
 

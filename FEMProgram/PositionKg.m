@@ -45,36 +45,36 @@ function [K, MpA, F, M, fixedMovements, appliedForce, df] = PositionKg(elements,
     K = zeros(sizeK); 
     F = zeros(sizeK, 1);
     M = zeros(sizeK);
-    F_aplicada1 = zeros(sizeK,1);
-    Movimentos_fixos1 = zeros(sizeK,1);
+    appliedForce1 = zeros(sizeK,1);
+    fixedMovements1 = zeros(sizeK,1);
     
     % modifica o vetor força dos dados iniciais para ser compativel com o programa
     for i=1:max(max(elements))
         
-        F_aplicada1(MpA(i)) = appliedForce0(i,1);
-        F_aplicada1(MpA(i)+1) = appliedForce0(i,2);
-        Movimentos_fixos1(MpA(i)) = fixedMovements0(i,1);
-        Movimentos_fixos1(MpA(i)+1) = fixedMovements0(i,2);
+        appliedForce1(MpA(i)) = appliedForce0(i,1);
+        appliedForce1(MpA(i)+1) = appliedForce0(i,2);
+        fixedMovements1(MpA(i)) = fixedMovements0(i,1);
+        fixedMovements1(MpA(i)+1) = fixedMovements0(i,2);
         
         if df(i) > 2
-             F_aplicada1(MpA(i)+2) = appliedForce0(i,3);
-             Movimentos_fixos1(MpA(i)+2) = fixedMovements0(i,3);
+             appliedForce1(MpA(i)+2) = appliedForce0(i,3);
+             fixedMovements1(MpA(i)+2) = fixedMovements0(i,3);
         end
-        appliedForce = F_aplicada1;
+        appliedForce = appliedForce1;
     end %%for
     
     
-    Movimentos_fixos2 = zeros(sum(sum(Movimentos_fixos1)),1);
+    fixedMovements2 = zeros(sum(sum(fixedMovements1)),1);
     j=1;
     
     %modifica o vetor dos Apoios para ser compativel com o programa
-    for i=1:length(Movimentos_fixos1) 
-        if Movimentos_fixos1(i) ~= 0
-            Movimentos_fixos2(j)=i;
+    for i=1:length(fixedMovements1) 
+        if fixedMovements1(i) ~= 0
+            fixedMovements2(j)=i;
             j=j+1;
         end
     end
-    fixedMovements = Movimentos_fixos2;
+    fixedMovements = fixedMovements2;
     clear j;
 
 end

@@ -1,8 +1,6 @@
-% Trabalho samuel
+%% Script A - describe the problem. Trabalho samuel
 
-% Script A - describe the problem.
-
-% Node coordinates, node 1 at first line, node 2 at second line...
+% Cartesian Node coordinates, node 1 at first line, node 2 at second line...
 nodes = [0 0; 6 0; 12 0; 6 6; 6 12];  
 
 % Elements and respective nodes, node 1 at first line, ect
@@ -34,5 +32,5 @@ Q = [0; 0; 0; 30000; 0; 0; 0];
 
 clear x;
 
-% ??
+% Steel density
 rho = 7850*ones(6,1);

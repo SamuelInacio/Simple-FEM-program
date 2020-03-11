@@ -1,9 +1,9 @@
 %DataProcessing: computes the length and the angles between the local and
 %                global coordinates of each element
-function [elementLength, gamma, elementType] = DataProcessing(nodes, elements, elementType, dynamicAnalysis)
+function [elementLength, alpha, elementType] = DataProcessing(nodes, elements, elementType, dynamicAnalysis)
 
     % Pre-alocations
-    gamma = zeros(length(elements));
+    alpha = zeros(length(elements));
     elementLength = zeros(length(elements));
 
     % Compute length and gamma
@@ -22,9 +22,9 @@ function [elementLength, gamma, elementType] = DataProcessing(nodes, elements, e
 
         % Angles
         if xx >= 0
-            gamma(i) = atand(yy/xx);
+            alpha(i) = atand(yy/xx);
             else
-                gamma(i) = (180+atand(yy/xx));
+                alpha(i) = (180+atand(yy/xx));
         end
     end %% for
 
