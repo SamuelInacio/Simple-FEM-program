@@ -1,7 +1,7 @@
-
-% InternalBeamStresses: computes the internal forces of a beam element. By
-% tranforming the displacement matrix to local coordinates, computes the
-% internal forces and stresses of each element
+% InternalBeamStresses: computes the internal forces of a beam element. 
+%                       By tranforming the displacement matrix to local 
+%                       coordinates, computes the internal forces and 
+%                       stresses of each element
 function [axialForce, shearForce1, shearForce2, moment1, moment2, F_internos] = InternalBeamStresses(i, elements, alpha, U, elementLength, E, A, I, MpA, Q)
 
     % Node 1 -  one of the elements to compute
@@ -56,7 +56,7 @@ function [axialForce, shearForce1, shearForce2, moment1, moment2, F_internos] = 
         
         else
             % matriz força 0 se não existir cargas distribuidas   
-            Fe=[0; 0; 0; 0; 0; 0]; 
+            Fe = [0; 0; 0; 0; 0; 0]; 
     end
     
     % Tranform global coordinates in local coordinates
@@ -73,6 +73,3 @@ function [axialForce, shearForce1, shearForce2, moment1, moment2, F_internos] = 
     moment1 = F_internos(3);
     moment2 = F_internos(6);         
 end
-
-
-

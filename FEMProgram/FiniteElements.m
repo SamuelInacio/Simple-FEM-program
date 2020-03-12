@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------%
 % Program: Finite Elements                                                %
 % Date:  March 2020                                                       %
-% Authors: Samuel Inácio;  Luis Pontes                                    %
+% Authors: Samuel Inácio                                                  %
 %-------------------------------------------------------------------------%
 
 % Clear
@@ -26,7 +26,7 @@ end
 for i = 1:size(elements,1)
     switch elementType(i) 
         
-        % Element is a Link - creates the global matrices
+        % Element is a Link 
         case 'l'
             [Kg] = ElementLink(i, elementLength, alpha, A, E);
             
@@ -42,7 +42,7 @@ for i = 1:size(elements,1)
     
     % Assembly of the global matrices of the struture 
     [K, F, M] = Assembler(i, Kg, Fg, elements, K, MpA, elementType, F, Q, Mg, M, dynamicAnalysis);
-    %[ K, F, M] = Assemblagem(i,Kg,Fg,elements,K,MpA,elementType,F,Q,Mg,M,dynamicAnalysis);
+   
 end
 
 % Update the vector of forces
@@ -57,8 +57,6 @@ U(freeMovements) = K(freeMovements, freeMovements)\F(freeMovements);
 
 % Display reactions at the supports
 fprintf('\n\n Displacements at the nodes\n');
-
-
 
 % Post-processing
 for i = 1:length(MpA) 
@@ -113,17 +111,17 @@ if dynamicAnalysis == 'N'
                     case 'l'   
                         [axialForce, axialStress] =  InternalLinkStresses(ii, elements, alpha, U, elementLength, E, A, MpA);
                         fprintf('\n Element %d\n\n', ii);
-                        fprintf('\t Axial Force = %f\n\n', axialForce);
+                        fprintf('\t Axial Force = %f\n', axialForce);
                         fprintf('\t Axial Stress = %f\n\n', axialStress);
 
                     % Element is a Beam
                     case 'b' 
                         [axialForce, shearForce1, shearForce2, moment1, moment2, F_internos] = InternalBeamStresses(ii, elements, alpha, U,elementLength, E, A, I, MpA, Q);
                         fprintf(' Element %d\n\n', ii);
-                        fprintf('\t Axial Force = %f\n\n', axialForce);
-                        fprintf('\t Shear Force at node 1 = %f\n\n',shearForce1);
-                        fprintf('\t Applied moment at node 1 = %f\n\n', moment1);
-                        fprintf('\t Shear Force at node 2 = %f\n\n', shearForce2);
+                        fprintf('\t Axial Force = %f\n', axialForce);
+                        fprintf('\t Shear Force at node 1 = %f\n',shearForce1);
+                        fprintf('\t Applied moment at node 1 = %f\n', moment1);
+                        fprintf('\t Shear Force at node 2 = %f\n', shearForce2);
                         fprintf('\t Applied moment at node 2 = %f\n\n', moment2);
                 end
         end %% if
@@ -148,7 +146,3 @@ if dynamicAnalysis == 'Y'
     disp(uw);
    
 end %% if
-
-
-
-

@@ -1,4 +1,4 @@
-%% Script A - describe the problem. Trabalho samuel
+%% Script A - 
 
 % Cartesian Node coordinates, node 1 at first line, node 2 at second line...
 nodes = [0 0; 6 0; 12 0; 6 6; 6 12];  
@@ -18,7 +18,7 @@ A = (149.1e-4)*ones(6,1);
 % Young Modulus of each element [Pa] 
 E = (210e9)*ones(6,1);    
 
-% Moment of Inertia of Area Ixy [m^4] -- (Momento de Inercia de area) 
+% Moment of Inertia of Area Ixy [m^4] 
 I = (25170e-8)*ones(6,1);                                                     
 
 % Applied forces at the nodes [Lines - node number; Columns - Fxx Fyy Mxy [N, Nm]]

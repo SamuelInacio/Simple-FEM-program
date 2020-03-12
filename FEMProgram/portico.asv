@@ -1,0 +1,37 @@
+%% Script D:  
+
+% Cartesian Node coordinates, node 1 at first line, node 2 at second line...
+nodes = [0 0; 0 3; 4 3; 4,0];  
+
+% Elements and respective nodes, node 1 at first line, ect
+elements = [1 2; 2 3; 3 4]; 
+
+
+elementType = ['v'; 'v'; 'v']; 
+
+
+fixedMovements0 = [1 1 1;0 0 0;0 0 0;1 1 1]; 
+
+
+A = (14.9e-3)*ones(3,1); 
+
+
+E = (210e9)*ones(3,1);
+
+
+I =(252*10^-6)*ones(3,1);
+
+
+appliedForce0 = [0 0 0; 30000 0 0; 0 0 0; 0 0  0];
+
+
+x = sym('x');
+
+
+Q = [0; 5000; 0];
+
+
+clear x;
+
+
+rho = 7850*ones(3,1);

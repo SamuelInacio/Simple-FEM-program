@@ -1,4 +1,3 @@
-
 % Assembler: performs the assembly of the global stiffness matrix matrices 
 function [K, F, M] = Assembler(i, Kg, Fg, elements, K, MpA, elementType, F, Q, Mg, M, dynamicAnalysis)
 

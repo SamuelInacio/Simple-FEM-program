@@ -1,7 +1,7 @@
-
-%  InternalLinkStresses: computes the internal forces of a link element. By
-% tranforming the displacement matrix to local coordinates, computes the
-% internal forces and stresses of each element
+% InternalLinkStresses: computes the internal forces of a link element. 
+%                       By tranforming the displacement matrix to local 
+%                       coordinates, computes the internal forces and 
+%                       stresses of each element
 
 function [axialForce, axialStress] = InternalLinkStresses(i, elements, alpha, U, elementLength, E, A, MpA)
 

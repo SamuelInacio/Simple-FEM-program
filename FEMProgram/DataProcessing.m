@@ -35,7 +35,5 @@ function [elementLength, alpha, elementType] = DataProcessing(nodes, elements, e
         for i = 1:length(elements)
             elementType(i) = 'b';
         end        
-    end
-    
+    end    
 end 
-

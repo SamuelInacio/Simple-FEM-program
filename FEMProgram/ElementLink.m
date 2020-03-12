@@ -1,5 +1,4 @@
-
-%ElementLink: Creates the stiffness matrix of the link element in global variables
+% ElementLink: Creates the stiffness matrix of the link element in global variables
 function [Kg] = ElementLink(i, elementLength, alpha, A, E)
 
     % Stiffness matrix in local coordinates
@@ -12,4 +11,3 @@ function [Kg] = ElementLink(i, elementLength, alpha, A, E)
     % Stiffness matrix in global coordinates
     Kg = T'*Ke*T;
 end
-

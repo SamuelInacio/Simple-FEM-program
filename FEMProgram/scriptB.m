@@ -1,5 +1,5 @@
 
-%% Script B - describe the problem. Trabalho Carlos
+%% Script B - 
 % Results are similar to ANSYS
 
 % Cartesian Node coordinates, node 1 at first line, node 2 at second line...
@@ -20,7 +20,7 @@ A = (149.1e-4)*ones(8,1);
 % Young Modulus of each element [Pa] 
 E = (210e9)*ones(8,1); 
 
-% Moment of Inertia of Area Ixy [m^4] -- (Momento de Inercia de area) 
+% Moment of Inertia of Area Ixy [m^4] 
 I = (25170e-8)*ones(8,1); 
 
 % Applied forces at the nodes [Lines - node number; Columns - Fxx Fyy Mxy [N, Nm]]
@@ -30,9 +30,9 @@ appliedForce0 = [0 -25000 0; 0 0 15000; 0 0 0; 0 0 -15000; 0 0 0; 0 0 0];
 x = sym('x'); 
 
 % Applied loads in the beam by order of element
-Q = [0; 0; 0; 30000; 0; 0; 0];
+Q = [0; 0; 0; 30000; 0; 0; 0; 0];
 
 clear x;
 
 % Steel density
-rho = 7850*ones(6,1);
+rho = 7850*ones(8,1);
