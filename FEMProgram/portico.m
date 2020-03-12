@@ -7,7 +7,7 @@ nodes = [0 0; 0 3; 4 3; 4,0];
 elements = [1 2; 2 3; 3 4]; 
 
 % Element Type [ l = link; b = beam], line corresponds to the number of elements
-elementType = ['v'; 'v'; 'v']; 
+elementType = ['b'; 'b'; 'b']; 
 
 % Degrees of freedom constrained by the support [Lines - number of the node; Columns - direction xx, yy, teta (0 = free, 1 = constrained)] 
 fixedMovements0 = [1 1 1;0 0 0;0 0 0;1 1 1]; 
