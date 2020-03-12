@@ -3,11 +3,11 @@
 function [elementLength, alpha, elementType] = DataProcessing(nodes, elements, elementType, dynamicAnalysis)
 
     % Pre-alocations
-    alpha = zeros(length(elements));
-    elementLength = zeros(length(elements));
+    alpha = zeros(length(elements),1);
+    elementLength = zeros(length(elements),1);
 
     % Compute length and gamma
-    for i = 1:length(elements) 
+    for i = 1:size(elements,1)
 
         % Global coordinates
         coordNode1 = nodes(elements(i,1),1:2);

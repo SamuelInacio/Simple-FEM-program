@@ -25,20 +25,37 @@ function [K, MpA, F, M, fixedMovements, appliedForce, df] = PositionKg(elements,
             df(node2) = 3;
         end
     end
-    
-    %algoritmo que usa a matriz dos graus de liberdade para criar a matriz
-    %posiçao na assemblagem
+end
 
-    MpA = zeros(length(df),1);
-    MpA(1) = 1;
-    sizeK = sizeK + df(1);
-    
-    %Algorito que determina o tamanho de K
-    for i = 2:length(df)
-        sizeK = sizeK + df(i);
-        position = MpA(i-1) + df(i-1);
-        MpA(i) = position;
+%algoritmo que usa a matriz dos graus de liberdade para criar a matriz
+%posiçao na assemblagem
 
+MpA = zeros(length(GdL),1);
+MpA(1) = 1;
+tamanho_K = tamanho_K+GdL(1);
+
+%Algorito que determina o tamanho de K
+for i = 2:length(GdL)
+    tamanho_K = tamanho_K+GdL(i);
+    posicao = MpA(i-1)+GdL(i-1);
+    MpA(i) = posicao;
+    
+end
+
+K = zeros(tamanho_K); % Pre inicialização das matrizes com os tamanhos corretos
+F = zeros(tamanho_K,1);
+M = zeros(tamanho_K);
+F_aplicada1 = zeros(tamanho_K,1);
+Movimentos_fixos1=zeros(tamanho_K,1);
+
+for i=1:max(max(Elementos)) %modifica o vetor força dos dados iniciais para ser compativel com o programa
+    F_aplicada1(MpA(i))=F_aplicada0(i,1);
+    F_aplicada1(MpA(i)+1)=F_aplicada0(i,2);
+    Movimentos_fixos1(MpA(i))=Movimentos_fixos0(i,1);
+    Movimentos_fixos1(MpA(i)+1)=Movimentos_fixos0(i,2);
+    if GdL(i) > 2
+         F_aplicada1(MpA(i)+2)=F_aplicada0(i,3);
+         Movimentos_fixos1(MpA(i)+2)=Movimentos_fixos0(i,3);
     end
     
     % Pre inicialização das matrizes com os tamanhos corretos
@@ -77,6 +94,8 @@ function [K, MpA, F, M, fixedMovements, appliedForce, df] = PositionKg(elements,
     fixedMovements = fixedMovements2;
     clear j;
 
-end
+  
+
+    
 
 
