@@ -1,2 +1,2 @@
 # Simple-FEM-program
-A simple FEM program written in GNU Octave
+A simple FEM program written in GNU Octave/MATLAB
