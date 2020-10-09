@@ -1,0 +1,10 @@
+Structure.nodes = [0 0; 6 0; 12 0; 6 6; 6 12];
+Structure.elements = [1 2; 2 3; 3 4; 1 4; 2 4; 4 5];  
+Structure.elementType = ['l';'l';'b';'b';'l';'b'];
+Structure.fixedMovements0 = [0 0 0; 0 0 0; 0 0 0; 0 0 0; 1 1 1]; 
+Structure.A = (149.1e-4)*ones(6,1); 
+Structure.E = (210e9)*ones(6,1);
+Structure.I = (25170e-8)*ones(6,1); 
+Structure.appliedForce0 = [0 -25000 0; 0 -50000 0;0 -75000 -15000; 0 0 0; 0 0 0];
+Structure.Q = [0; 0; 0; 30000; 0; 0; 0];
+Structure.rho = 7850*ones(6,1);

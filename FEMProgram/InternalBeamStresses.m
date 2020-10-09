@@ -63,8 +63,8 @@ function [axialForce, shearForce1, shearForce2, moment1, moment2, F_internos] = 
     Ue = T*Ug; 
     
     % Solving the system of equations
-    F_internos = (Ke*Ue)-Fe; 
-    
+    F_internos = (Ke*Ue)-Fe;
+    display(F_internos);
     % força axial (tanto do n´1 um como do nó 2, de acordo com a convensão de sinais) )
     axialForce = F_internos(4);
     
