@@ -60,44 +60,45 @@ function [Mg, Kg, Fg] = ElementBeam(i, elementLength, alpha, E, A, I, Q, dynamic
     Fg = zeros(6,1);
 
     % Compute matrix of global forces for distributed loads
-    if Q(i) ~= 0
-
-        % Symbolic computation
-        x = sym('x'); 
-        elementLength = sym(elementLength(i));
-        Q1 = symfun(Q(i),x);
-
-        % Shape functions at node 1, direction y
-        N_Iv = symfun(1+(-3/elementLength^2)*x^2+(2/elementLength^3)*x^3, x); 
-
-        %Shape functions at node 1, direction theta
-        N_Iteta = symfun(x+(-2/elementLength)*x^2+(1/elementLength^2)*x^3, x); 
-
-        %funções de formas nó 2 direção y
-        N_IIv = symfun((3/elementLength^2)*x^2-(2/elementLength^3)*x^3, x);  
-
-        %funções de formas nó 2 direção teta
-        N_IIteta = symfun((-1/elementLength)*x^2+(1/elementLength^2)*x^3, x); 
-
-        %calculo do integral da função de forma nó 1 direção y
-        V_Iv = -int(N_Iv*Q1, x, [0, elementLength]); 
-
-         %calculo do integral nó 1 direção teta
-        V_Iteta = -int(N_Iteta*Q1, x, [0, elementLength]);
-
-        %calculo do integral nó 2 direção y
-        V_IIv = -int(N_IIv*Q1, x, [0, elementLength]); 
-
-        %calculo do integral nó 2 direção teta
-        V_IIteta = -int(N_IIteta*Q1, x, [0, elementLength]); 
-
-         %posiciona o resultado do integral na matriz formas global e converte o tipo de variavel simbolico para um tipo double
-        Fe = [0; double(V_Iv); double(V_Iteta); 0; double(V_IIv); double(V_IIteta)];
-
-        %tranformação para variaveis globais
-        Fg = T'*Fe; 
+%     if Q(i) ~= 0
+% 
+%         % Symbolic computation
+%         %x = sym('x'); 
+%         %elementLength = sym(elementLength(i));
+%         %Q1 = symfun(Q(i),x);
+%         Q1 = Q(i);
+%         
+%         % Shape functions at node 1, direction y
+%         N_Iv = symfun(1+(-3/elementLength^2)*x^2+(2/elementLength^3)*x^3, x); 
+% 
+%         %Shape functions at node 1, direction theta
+%         N_Iteta = symfun(x+(-2/elementLength)*x^2+(1/elementLength^2)*x^3, x); 
+% 
+%         %funções de formas nó 2 direção y
+%         N_IIv = symfun((3/elementLength^2)*x^2-(2/elementLength^3)*x^3, x);  
+% 
+%         %funções de formas nó 2 direção teta
+%         N_IIteta = symfun((-1/elementLength)*x^2+(1/elementLength^2)*x^3, x); 
+% 
+%         %calculo do integral da função de forma nó 1 direção y
+%         V_Iv = -int(N_Iv*Q1, x, [0, elementLength]); 
+% 
+%          %calculo do integral nó 1 direção teta
+%         V_Iteta = -int(N_Iteta*Q1, x, [0, elementLength]);
+% 
+%         %calculo do integral nó 2 direção y
+%         V_IIv = -int(N_IIv*Q1, x, [0, elementLength]); 
+% 
+%         %calculo do integral nó 2 direção teta
+%         V_IIteta = -int(N_IIteta*Q1, x, [0, elementLength]); 
+% 
+%          %posiciona o resultado do integral na matriz formas global e converte o tipo de variavel simbolico para um tipo double
+%         Fe = [0; double(V_Iv); double(V_Iteta); 0; double(V_IIv); double(V_IIteta)];
+% 
+%         %tranformação para variaveis globais
+%         Fg = T'*Fe; 
         
-    end %%if
+%   end %%if
 
 end
 

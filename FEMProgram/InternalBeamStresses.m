@@ -38,33 +38,33 @@ function [axialForce, shearForce1, shearForce2, moment1, moment2, F_internos] = 
               0                   0              0              0                   0            1];
 
     % If distributed loads exist in the element, compute them to remove them from the equation
-    if Q(i) ~= 0 
-        
-        x = sym('x');
-        elementLength = sym(elementLength(i));
-        Q1 = symfun(Q(i),x);
-        N_Iv = symfun(1+(-3/elementLength^2)*x^2+(2/elementLength^3)*x^3,x);
-        N_Iteta = symfun(x+(-2/elementLength)*x^2+(1/elementLength^2)*x^3,x);
-        N_IIv = symfun((3/elementLength^2)*x^2-(2/elementLength^3)*x^3,x);
-        N_IIteta = symfun((-1/elementLength)*x^2+(1/elementLength^2)*x^3,x);
-        V_Iv = -int(N_Iv*Q1,x,[0,elementLength]);
-        V_Iteta = -int(N_Iteta*Q1,x,[0,elementLength]);
-        V_IIv = -int(N_IIv*Q1,x,[0,elementLength]);
-        V_IIteta = -int(N_IIteta*Q1,x,[0,elementLength]);
-
-        Fe = [0; double(V_Iv); double(V_Iteta); 0; double(V_IIv); double(V_IIteta)];
-        
-        else
-            % matriz força 0 se não existir cargas distribuidas   
-            Fe = [0; 0; 0; 0; 0; 0]; 
-    end
+    Fe = [0; 0; 0; 0; 0; 0]; %DELETE WHEN DISTRIBUTED STRESSES ARE ATIVATED!!!!!
+%     if Q(i) ~= 0 
+%         
+%         x = sym('x');
+%         elementLength = sym(elementLength(i));
+%         Q1 = symfun(Q(i),x);
+%         N_Iv = symfun(1+(-3/elementLength^2)*x^2+(2/elementLength^3)*x^3,x);
+%         N_Iteta = symfun(x+(-2/elementLength)*x^2+(1/elementLength^2)*x^3,x);
+%         N_IIv = symfun((3/elementLength^2)*x^2-(2/elementLength^3)*x^3,x);
+%         N_IIteta = symfun((-1/elementLength)*x^2+(1/elementLength^2)*x^3,x);
+%         V_Iv = -int(N_Iv*Q1,x,[0,elementLength]);
+%         V_Iteta = -int(N_Iteta*Q1,x,[0,elementLength]);
+%         V_IIv = -int(N_IIv*Q1,x,[0,elementLength]);
+%         V_IIteta = -int(N_IIteta*Q1,x,[0,elementLength]);
+% 
+%         Fe = [0; double(V_Iv); double(V_Iteta); 0; double(V_IIv); double(V_IIteta)];
+%         
+%         else
+%             % matriz força 0 se não existir cargas distribuidas   
+%             Fe = [0; 0; 0; 0; 0; 0]; 
+%     end
     
     % Tranform global coordinates in local coordinates
     Ue = T*Ug; 
     
     % Solving the system of equations
     F_internos = (Ke*Ue)-Fe;
-    display(F_internos);
     % força axial (tanto do n´1 um como do nó 2, de acordo com a convensão de sinais) )
     axialForce = F_internos(4);
     
